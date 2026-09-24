@@ -1,0 +1,635 @@
+{
+  "manifestVersion": "1.0",
+  "name": "jebadiah-x402-services",
+  "description": "Pay-per-call data APIs for AI agents (x402 on Base). By Jebadiah.",
+  "servers": [
+    {
+      "name": "tenderwatch",
+      "url": "https://x402-tenderwatch.onrender.com",
+      "description": "Government procurement search and fit-scoring"
+    },
+    {
+      "name": "edgar-lens",
+      "url": "https://x402-edgar-lens.onrender.com",
+      "description": "SEC EDGAR filing search and extraction"
+    },
+    {
+      "name": "trialscope",
+      "url": "https://x402-trialscope.onrender.com",
+      "description": "Clinical trial search and change-deltas"
+    },
+    {
+      "name": "docextract",
+      "url": "https://x402-docextract.onrender.com",
+      "description": "PDF to structured JSON extraction"
+    },
+    {
+      "name": "patentscope",
+      "url": "https://x402-patentscope.onrender.com",
+      "description": "Patent search and prior-art ranking"
+    },
+    {
+      "name": "alexandria",
+      "url": "https://x402-alexandria.onrender.com",
+      "description": "Automotive parts intelligence"
+    }
+  ],
+  "tools": [
+    {
+      "name": "tenderwatch_search",
+      "description": "[Government procurement search and fit-scoring] Search procurement opportunities Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Keyword search (title/full-text)"
+          },
+          "source": {
+            "type": "string",
+            "description": "sam | ted | all (default all)",
+            "enum": [
+              "sam",
+              "ted",
+              "all"
+            ]
+          },
+          "naics": {
+            "type": "string",
+            "description": "NAICS code filter (SAM)"
+          },
+          "psc": {
+            "type": "string",
+            "description": "PSC filter, e.g. D316 (SAM, client-side)"
+          },
+          "setAside": {
+            "type": "string",
+            "description": "Set-aside code filter, e.g. SBA (SAM)"
+          },
+          "postedFrom": {
+            "type": "string",
+            "description": "YYYY-MM-DD (default 30 days ago)"
+          },
+          "postedTo": {
+            "type": "string",
+            "description": "YYYY-MM-DD (default today)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "1\u2013100 (default 20)"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-tenderwatch.onrender.com",
+          "method": "GET",
+          "path": "/search",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "tenderwatch_opportunity_by_id",
+      "description": "[Government procurement search and fit-scoring] Full detail for one opportunity Priced $0.01 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Path parameter for /opportunity/{id}"
+          },
+          "source": {
+            "type": "string",
+            "description": "sam | ted",
+            "enum": [
+              "sam",
+              "ted"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "source"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-tenderwatch.onrender.com",
+          "method": "GET",
+          "path": "/opportunity/{id}",
+          "priceUsdc": "$0.01",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "tenderwatch_fit_score",
+      "description": "[Government procurement search and fit-scoring] Heuristic fit score 0\u2013100 (no LLM) Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "capabilityStatement": {
+            "type": "string",
+            "description": "Vendor capability statement (\u226420000 chars)"
+          },
+          "opportunity": {
+            "type": "object",
+            "description": "Normalized opportunity (title or description required)"
+          }
+        },
+        "required": [
+          "capabilityStatement",
+          "opportunity"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-tenderwatch.onrender.com",
+          "method": "POST",
+          "path": "/fit-score",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "edgar-lens_search",
+      "description": "[SEC EDGAR filing search and extraction] Full-text search of SEC EDGAR filings Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search phrase, e.g. 'revenue recognition'"
+          },
+          "forms": {
+            "type": "string",
+            "description": "Comma-separated filing forms"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": [
+          "q"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-edgar-lens.onrender.com",
+          "method": "GET",
+          "path": "/search",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "edgar-lens_filing___sections",
+      "description": "[SEC EDGAR filing search and extraction] Extract Item 1A and Item 7/2 sections from a filing Priced $0.03 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cik": {
+            "type": "string",
+            "description": "Path parameter for /filing/{cik}/{accession}/sections"
+          },
+          "accession": {
+            "type": "string",
+            "description": "Path parameter for /filing/{cik}/{accession}/sections"
+          },
+          "sections": {
+            "type": "string",
+            "description": "Comma-separated: riskFactors, mda"
+          }
+        },
+        "required": [
+          "cik",
+          "accession"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-edgar-lens.onrender.com",
+          "method": "GET",
+          "path": "/filing/{cik}/{accession}/sections",
+          "priceUsdc": "$0.03",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "edgar-lens_brief",
+      "description": "[SEC EDGAR filing search and extraction] Extractive TF-IDF brief of a filing with section citations Priced $0.05 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cik": {
+            "type": "string",
+            "description": "Path parameter for /brief/{cik}/{accession}"
+          },
+          "accession": {
+            "type": "string",
+            "description": "Path parameter for /brief/{cik}/{accession}"
+          },
+          "sentences": {
+            "type": "integer",
+            "description": "Top sentences per section"
+          }
+        },
+        "required": [
+          "cik",
+          "accession"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-edgar-lens.onrender.com",
+          "method": "GET",
+          "path": "/brief/{cik}/{accession}",
+          "priceUsdc": "$0.05",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "trialscope_search",
+      "description": "[Clinical trial search and change-deltas] Search clinical trials Priced $0.01 USDC per call via x402 on Base. Query ClinicalTrials.gov by keyword term, phase, overall status, lead sponsor, and location. Returns normalized study rows.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "description": "Free-text search term (disease, drug, keyword)"
+          },
+          "phase": {
+            "type": "string",
+            "description": "Trial phase: 1, 2, 3, 4 (or PHASE1_PHASE2 style)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Overall status, e.g. RECRUITING, COMPLETED"
+          },
+          "sponsor": {
+            "type": "string",
+            "description": "Lead sponsor name (partial match)"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location text, e.g. Boston, MA"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Results per call (1-50, default 20)"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-trialscope.onrender.com",
+          "method": "GET",
+          "path": "/search",
+          "priceUsdc": "$0.01",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "trialscope_study",
+      "description": "[Clinical trial search and change-deltas] Study dossier Priced $0.01 USDC per call via x402 on Base. Full normalized dossier for one study: conditions, interventions, eligibility summary, outcomes, locations, sponsor, dates.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nctId": {
+            "type": "string",
+            "description": "Path parameter for /study/{nctId}"
+          }
+        },
+        "required": [
+          "nctId"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-trialscope.onrender.com",
+          "method": "GET",
+          "path": "/study/{nctId}",
+          "priceUsdc": "$0.01",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "trialscope_snapshot",
+      "description": "[Clinical trial search and change-deltas] Snapshot studies Priced $0.01 USDC per call via x402 on Base. Store current dossiers for up to 25 NCT ids. Returns { snapshotId, count, at }.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "nctIds": {
+            "type": "array",
+            "description": "nctIds"
+          }
+        },
+        "required": [
+          "nctIds"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-trialscope.onrender.com",
+          "method": "POST",
+          "path": "/snapshot",
+          "priceUsdc": "$0.01",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "trialscope_delta",
+      "description": "[Clinical trial search and change-deltas] Change-delta vs snapshot Priced $0.02 USDC per call via x402 on Base. Compare a stored snapshot record against the live study record. Returns { nctId, changed, changes: [{ field, before, after }] }.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "snapshotId": {
+            "type": "string",
+            "description": "Snapshot id from POST /snapshot"
+          },
+          "nctId": {
+            "type": "string",
+            "description": "NCT id that was in the snapshot"
+          }
+        },
+        "required": [
+          "snapshotId",
+          "nctId"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-trialscope.onrender.com",
+          "method": "GET",
+          "path": "/delta",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "docextract_extract",
+      "description": "[PDF to structured JSON extraction] Extract structured data from a PDF Priced up to $0.10 ($0.02 + $0.005/page) USDC per call via x402 on Base. Multipart upload, field name `file`. Limits: 10MB, 50 pages. x402 upto: authorizes $0.10 max, settles $0.02 + $0.005/page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "The PDF document"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-docextract.onrender.com",
+          "method": "POST",
+          "path": "/extract",
+          "priceUsdc": "up to $0.10 ($0.02 + $0.005/page)",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "patentscope_search",
+      "description": "[Patent search and prior-art ranking] Keyword patent search ($0.03) Priced $0.03 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Keyword query, e.g. 'wireless charging coil'"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": [
+          "q"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-patentscope.onrender.com",
+          "method": "GET",
+          "path": "/search",
+          "priceUsdc": "$0.03",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "patentscope_patent",
+      "description": "[Patent search and prior-art ranking] Full patent record with claims ($0.02) Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": "Path parameter for /patent/{number}"
+          }
+        },
+        "required": [
+          "number"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-patentscope.onrender.com",
+          "method": "GET",
+          "path": "/patent/{number}",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "patentscope_prior_art",
+      "description": "[Patent search and prior-art ranking] TF-IDF ranked prior-art search ($0.05) Priced $0.05 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Invention description to find prior art for"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": [
+          "description"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-patentscope.onrender.com",
+          "method": "POST",
+          "path": "/prior-art",
+          "priceUsdc": "$0.05",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "alexandria_parts_search",
+      "description": "[Automotive parts intelligence] Search Alexandria parts research Priced $0.03 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Keywords, e.g. 'timing belt'"
+          },
+          "vehicle": {
+            "type": "string",
+            "description": "Badge/model/year hint, e.g. '93 metro xfi'"
+          },
+          "symptom": {
+            "type": "string",
+            "description": "Failure symptom phrasing, e.g. 'wind noise at speed'"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-alexandria.onrender.com",
+          "method": "GET",
+          "path": "/parts/search",
+          "priceUsdc": "$0.03",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "alexandria_fitment_check",
+      "description": "[Automotive parts intelligence] Fitment notes for a part \u00d7 vehicle Priced $0.05 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "part": {
+            "type": "string",
+            "description": "Part description, e.g. 'door handle'"
+          },
+          "vehicle": {
+            "type": "string",
+            "description": "Badge/model/year, e.g. '94 swift'"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": [
+          "part"
+        ]
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-alexandria.onrender.com",
+          "method": "GET",
+          "path": "/fitment/check",
+          "priceUsdc": "$0.05",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "alexandria_failures",
+      "description": "[Automotive parts intelligence] Common failure modes for a model Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model hint, e.g. 'metro'. Omit for platform-wide."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-alexandria.onrender.com",
+          "method": "GET",
+          "path": "/failures",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    },
+    {
+      "name": "alexandria_demand",
+      "description": "[Automotive parts intelligence] Demand signals across the dataset Priced $0.02 USDC per call via x402 on Base.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "limit"
+          }
+        },
+        "required": []
+      },
+      "annotations": {
+        "x402": {
+          "baseUrl": "https://x402-alexandria.onrender.com",
+          "method": "GET",
+          "path": "/demand",
+          "priceUsdc": "$0.02",
+          "network": "eip155:8453",
+          "paymentProtocol": "x402 v2 (exact scheme, USDC)"
+        }
+      }
+    }
+  ]
+}
