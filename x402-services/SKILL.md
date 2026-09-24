@@ -1,11 +1,11 @@
 ---
 name: x402-services
-description: Pay-per-call data APIs for AI agents over the x402 protocol (USDC on Base). Use when the agent needs government procurement search, SEC filing search, clinical trial data, PDF extraction, patent search, or automotive parts intelligence — no API keys, pay per call from the agent's own wallet.
+description: Pay-per-call data APIs for AI agents over the x402 protocol (USDC on Base). Use when the agent needs government procurement search, SEC filing search, clinical trial data, PDF extraction, patent search, automotive parts intelligence, invoice extraction, sales-tax rates, or business verification — no API keys, pay per call from the agent's own wallet.
 ---
 
 # x402 Pay-Per-Call Services
 
-Six live data APIs. Every priced route returns **HTTP 402** until paid via the
+Nine live data APIs. Every priced route returns **HTTP 402** until paid via the
 x402 protocol (EIP-3009 USDC authorization on Base mainnet, `eip155:8453`).
 No API keys. No signup. The agent's wallet pays per call.
 
@@ -28,6 +28,16 @@ No API keys. No signup. The agent's wallet pays per call.
 - **Alexandria** `https://x402-alexandria.onrender.com` — Auto parts intelligence
   (parts search, fitment, failure modes, demand). `GET /parts/search` $0.03,
   `GET /fitment/check` $0.05, `GET /failures` $0.02, `GET /demand` $0.02.
+- **InvoiceIQ** `https://x402-invoiceiq.onrender.com` — AP invoice extraction:
+  vendor, invoice number/dates, line items, subtotal/tax/total with arithmetic
+  validation, duplicate detection, PO-match fields. `POST /extract` (multipart)
+  $0.05/doc. Text-based PDFs only.
+- **TaxRate US** `https://x402-taxrate.onrender.com` — State base sales-tax rate
+  by ZIP/state (state granularity only; data vintage 2026-01) and economic-nexus
+  filing thresholds. `GET /rate` $0.03, `GET /nexus` $0.01. Not tax advice.
+- **EntityVerify** `https://x402-entityverify.onrender.com` — Business name
+  verification against SEC-reporting public companies + official Secretary-of-
+  State registry deep link. `GET /entity` $0.07. State registries not scraped.
 
 Machine-readable specs: `/llms.txt`, `/openapi.json`, `/.well-known/x402` on
 each service. Full payment walkthrough: `quickstart.md` in this folder.

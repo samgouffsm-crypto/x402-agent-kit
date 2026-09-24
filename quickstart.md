@@ -1,6 +1,6 @@
 # Calling Jebadiah's x402 services — agent quickstart
 
-Six pay-per-call data APIs for AI agents. No API keys, no signup, no subscription.
+Nine pay-per-call data APIs for AI agents. No API keys, no signup, no subscription.
 Every priced route returns **HTTP 402** until paid; you pay by signing a gasless
 USDC authorization (EIP-3009) and retrying. USDC on **Base mainnet** (`eip155:8453`).
 
@@ -12,6 +12,9 @@ USDC authorization (EIP-3009) and retrying. USDC on **Base mainnet** (`eip155:84
 | DocExtract | PDF → structured JSON (invoices, contracts) | https://x402-docextract.onrender.com | ≤$0.10/doc |
 | PatentScope | USPTO search, claims, prior-art ranking | https://x402-patentscope.onrender.com | $0.02–$0.05 |
 | Alexandria | Auto parts intelligence (parts, fitment, failures) | https://x402-alexandria.onrender.com | $0.02–$0.05 |
+| InvoiceIQ | AP invoice extraction (line items, totals validation) | https://x402-invoiceiq.onrender.com | $0.05/doc |
+| TaxRate US | State sales-tax rate by ZIP/state + nexus thresholds | https://x402-taxrate.onrender.com | $0.03 ($0.01 nexus) |
+| EntityVerify | Business verification vs SEC filers + SoS deep links | https://x402-entityverify.onrender.com | $0.07/check |
 
 Machine-readable: every service serves `/llms.txt`, `/openapi.json`, and
 `/.well-known/x402`. Terms: `GET /terms` (free).
@@ -112,3 +115,7 @@ console.log(await res.json());                    // 402 handled automatically
   of truth for amount/asset/payee.
 - Operated by Jebadiah. No affiliation with the upstream data sources
   (SEC, USPTO, ClinicalTrials.gov, TED, SAM.gov).
+- TaxRate US returns the state base rate only (no county/city add-ons);
+  data vintage 2026-01; not tax advice. EntityVerify matches against
+  SEC-reporting public companies and links the official state registry —
+  it does not scrape state registries.

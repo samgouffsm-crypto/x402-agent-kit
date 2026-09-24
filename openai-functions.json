@@ -594,5 +594,118 @@
       "path": "/demand",
       "price_usdc": "$0.02"
     }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "invoiceiq_extract",
+      "description": "[AP invoice extraction] Extract vendor, invoice number/dates, line items, subtotal/tax/total with arithmetic validation, duplicate-invoice detection, and PO-match fields from a text-based invoice PDF. Priced $0.05 USDC per document via x402 on Base. Multipart upload, field name `file`. Limits: 10MB, 50 pages.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "The invoice PDF document (text-based; scanned images rejected)"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      }
+    },
+    "_meta": {
+      "service": "invoiceiq",
+      "base_url": "https://x402-invoiceiq.onrender.com",
+      "method": "POST",
+      "path": "/extract",
+      "price_usdc": "$0.05"
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "taxrate_rate",
+      "description": "[US sales-tax rate lookup] State base sales-tax rate by 5-digit ZIP or 2-letter state. State granularity only (county/city/district add-ons not included); data vintage 2026-01. Not tax advice. Priced $0.03 USDC per lookup via x402 on Base.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "zip": {
+            "type": "string",
+            "description": "5-digit US ZIP code"
+          },
+          "state": {
+            "type": "string",
+            "description": "2-letter US state code"
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address (state-level resolution)"
+          }
+        },
+        "required": []
+      }
+    },
+    "_meta": {
+      "service": "taxrate",
+      "base_url": "https://x402-taxrate.onrender.com",
+      "method": "GET",
+      "path": "/rate",
+      "price_usdc": "$0.03"
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "taxrate_nexus",
+      "description": "[US sales-tax nexus reference] Remote-seller economic-nexus filing thresholds per state. Omit state for all states. Reference only \u2014 verify with the state DOR. Priced $0.01 USDC per call via x402 on Base.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "2-letter US state code (omit for all states)"
+          }
+        },
+        "required": []
+      }
+    },
+    "_meta": {
+      "service": "taxrate",
+      "base_url": "https://x402-taxrate.onrender.com",
+      "method": "GET",
+      "path": "/nexus",
+      "price_usdc": "$0.01"
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "entityverify_entity",
+      "description": "[US business verification / KYB-lite] Match a business name against SEC-reporting public companies; returns verification_status plus the official Secretary-of-State registry deep link for the requested state. State registries are not scraped (JS/WAF-gated). Priced $0.07 USDC per check via x402 on Base.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Business name to verify"
+          },
+          "state": {
+            "type": "string",
+            "description": "2-letter US state code"
+          }
+        },
+        "required": [
+          "name",
+          "state"
+        ]
+      }
+    },
+    "_meta": {
+      "service": "entityverify",
+      "base_url": "https://x402-entityverify.onrender.com",
+      "method": "GET",
+      "path": "/entity",
+      "price_usdc": "$0.07"
+    }
   }
 ]

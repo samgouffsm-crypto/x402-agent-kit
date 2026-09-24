@@ -187,10 +187,10 @@ describe("loadOperatorKey", () => {
 });
 
 describe("generated tool definitions", () => {
-  it("has 18 unique tools with valid routing info", () => {
-    expect(TOOLS).toHaveLength(18);
+  it("has 22 unique tools with valid routing info", () => {
+    expect(TOOLS).toHaveLength(22);
     const names = TOOLS.map((t) => t.name);
-    expect(new Set(names).size).toBe(18);
+    expect(new Set(names).size).toBe(22);
     for (const t of TOOLS) {
       expect(t.baseUrl).toMatch(/^https:\/\/x402-/);
       expect(["GET", "POST"]).toContain(t.method);

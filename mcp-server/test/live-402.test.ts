@@ -48,13 +48,13 @@ async function fetchWithRetry(url: string, init: RequestInit, attempts = 3): Pro
 }
 
 describe("live 402 requirement parsing (no payment settled)", () => {
-  it("all 18 priced endpoints 402 with parseable Base-mainnet requirements", async () => {
+  it("all 22 priced endpoints 402 with parseable Base-mainnet requirements", async () => {
     for (const tool of TOOLS) {
       let res: Response;
-      if (tool.name === "docextract_extract") {
+      if (tool.bodyKind === "multipart-file") {
         // The 402 paywall fires before multer parses the upload, so an empty
         // POST is enough to capture the requirements (no file needed).
-        res = await fetchWithRetry(`${tool.baseUrl}/extract`, { method: "POST" });
+        res = await fetchWithRetry(`${tool.baseUrl}${tool.path}`, { method: "POST" });
       } else {
         const { url, init } = buildRequest(tool, dummyArgs(tool));
         res = await fetchWithRetry(url, init);

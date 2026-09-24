@@ -130,5 +130,52 @@ def docextract_pdf(pdf_path: str) -> str:
     return json.dumps(data)[:12000]
 
 
+@tool
+def invoiceiq_extract(pdf_path: str) -> str:
+    """AP invoice extraction: vendor, invoice number/dates, line items,
+    subtotal/tax/total with arithmetic validation, duplicate-invoice
+    detection, and PO-match fields. Text-based PDFs only.
+    $0.05/doc via x402."""
+    with open(pdf_path, "rb") as f:
+        data = _paid_request("POST", "https://x402-invoiceiq.onrender.com/extract",
+                             files={"file": (os.path.basename(pdf_path), f, "application/pdf")})
+    return json.dumps(data)[:12000]
+
+
+@tool
+def taxrate_rate(zip: str = "", state: str = "", address: str = "") -> str:
+    """US sales-tax rate lookup: state base rate by 5-digit ZIP or 2-letter
+    state. State granularity only; data vintage 2026-01. Not tax advice.
+    $0.03/lookup via x402."""
+    params = {k: v for k, v in
+              {"zip": zip, "state": state, "address": address}.items() if v}
+    data = _paid_request("GET", "https://x402-taxrate.onrender.com/rate",
+                         params=params)
+    return json.dumps(data)[:8000]
+
+
+@tool
+def taxrate_nexus(state: str = "") -> str:
+    """Remote-seller economic-nexus filing thresholds per state (omit state
+    for all states). Reference only — verify with the state DOR.
+    $0.01/call via x402."""
+    data = _paid_request("GET", "https://x402-taxrate.onrender.com/nexus",
+                         params={"state": state} if state else {})
+    return json.dumps(data)[:8000]
+
+
+@tool
+def entityverify_entity(name: str, state: str) -> str:
+    """US business verification: match a business name against SEC-reporting
+    public companies; returns verification status plus the official
+    Secretary-of-State registry deep link. State registries not scraped.
+    $0.07/check via x402."""
+    data = _paid_request("GET", "https://x402-entityverify.onrender.com/entity",
+                         params={"name": name, "state": state})
+    return json.dumps(data)[:8000]
+
+
 ALL_TOOLS = [tenderwatch_search, edgar_search, trialscope_search,
-             patentscope_search, alexandria_parts_search, docextract_pdf]
+             patentscope_search, alexandria_parts_search, docextract_pdf,
+             invoiceiq_extract, taxrate_rate, taxrate_nexus,
+             entityverify_entity]
